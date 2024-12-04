@@ -72,84 +72,155 @@ class MyHomePage extends StatelessWidget {
               ],
             ),
 
-            // Content Section
+            // Artikel Section
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Sejarah Kuliner Jogja',
+                    'Artikel Terkini',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Kuliner Yogyakarta memiliki akar budaya yang sangat dalam, mulai dari makanan tradisional Keraton hingga jajanan pasar yang tetap lestari hingga kini.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey.shade800,
-                      height: 1.5,
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Aksi tombol
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                    ),
-                    child: const Text(
-                      'Selengkapnya',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Mengenal Makanan Khas Yogyakarta',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Kuliner Yogyakarta memiliki akar budaya yang sangat dalam, mulai dari makanan tradisional Keraton hingga jajanan pasar yang tetap lestari hingga kini...',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey.shade800,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextButton(
+                          onPressed: () {
+                            // Aksi untuk menuju halaman artikel lebih lanjut
+                            Navigator.pushNamed(context, '/article');
+                          },
+                          child: const Text(
+                            'See More',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
 
-            // Divider
-            const Divider(thickness: 1, indent: 50, endIndent: 50),
-
-            // Footer Section
+            // Makanan Section
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Temukan makanan khas Jogja terbaik!',
+                    'Rekomendasi Makanan',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Kami menyediakan informasi tentang kuliner legendaris Yogyakarta, dari tempat makan terbaik hingga cita rasa yang tidak terlupakan.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade700,
-                      height: 1.5,
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        foodCard(
+                            'https://via.placeholder.com/150', 'Sate Klathak'),
+                        foodCard(
+                            'https://via.placeholder.com/150', 'Gudeg Jogja'),
+                        foodCard(
+                            'https://via.placeholder.com/150', 'Bakpia Pathok'),
+                        foodCard(
+                            'https://via.placeholder.com/150', 'Nasi Kucing'),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
-                  Icon(Icons.restaurant_menu, size: 60, color: Colors.orange),
+                  const SizedBox(height: 24),
+                  TextButton(
+                    onPressed: () {
+                      // Aksi untuk menuju halaman pencarian makanan
+                      Navigator.pushNamed(context, '/search');
+                    },
+                    child: const Text(
+                      'Cari Makanan Lain',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  )
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Widget untuk card makanan
+  Widget foodCard(String imageUrl, String title) {
+    return Container(
+      margin: const EdgeInsets.only(right: 16),
+      width: 150,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 8,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.network(imageUrl, width: 150, height: 100, fit: BoxFit.cover),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
