@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yummyogya_mobile/dashboard/screens/dashboard_screen.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({Key? key}) : super(key: key);
@@ -64,8 +65,12 @@ class LeftDrawer extends StatelessWidget {
             leading: const Icon(Icons.dashboard),
             title: const Text('Dashboard'),
             onTap: () {
-              Navigator.pushNamed(
-                  context, '/dashboard'); // Route ke halaman Dashboard
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DashboardScreen(),
+                ),
+              );
             },
           ),
 
