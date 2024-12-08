@@ -28,6 +28,13 @@ class MyApp extends StatelessWidget {
           ).copyWith(secondary: Colors.deepPurple[400]),
         ),
         home: const LoginPage(),
+        routes: {
+          '/menu': (context) =>
+              const MyHomePage(username: 'User'), // Rute ke halaman menu
+          '/search': (context) => const SearchPage(), // Rute ke halaman search
+          // '/wishlist' : (context) => const WishlistPage(),
+          // '/dashboard' (context) => const DashboardPage(),
+        },
       ),
     );
   }
