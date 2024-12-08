@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class LeftDrawer extends StatelessWidget {
-  const LeftDrawer({Key? key}) : super(key: key);
+  final String username; // Parameter untuk nama pengguna
+
+  const LeftDrawer({Key? key, required this.username}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,32 +13,24 @@ class LeftDrawer extends StatelessWidget {
         children: [
           // Drawer Header
           DrawerHeader(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.orange,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                CircleAvatar(
+              children: [
+                const CircleAvatar(
                   radius: 30,
                   backgroundImage: NetworkImage(
                       'https://via.placeholder.com/150'), // Ganti dengan gambar profil
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
-                  'Selamat Datang, Farrell!',
-                  style: TextStyle(
+                  'Selamat Datang, $username!', // Menampilkan nama pengguna
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  'farrell@example.com',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
                   ),
                 ),
               ],
@@ -66,6 +60,14 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushNamed(
                   context, '/dashboard'); // Route ke halaman Dashboard
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.favorite),
+            title: const Text('Wishlist'),
+            onTap: () {
+              Navigator.pushNamed(context,
+                  '/wishlist'); // Route ke halaman Wishlist (on progress)
             },
           ),
 

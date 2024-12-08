@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'register.dart'; // Pastikan file register.dart ada di folder yang sesuai
+import 'register.dart';
+import 'menu.dart'; // Impor file menu.dart
 
 void main() {
   runApp(const LoginApp());
@@ -55,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     // URL endpoint Django
-    const String url = 'http://10.0.2.2:8000/authentication/login_flutter/';
+    const String url = 'http://127.0.0.1:8000/authentication/login_flutter/';
 
     try {
       final response = await http.post(
@@ -74,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
           String message = data['message'];
           String uname = data['username'];
 
-          // Navigasi ke halaman utama (MyHomePage)
+          // Navigasi ke halaman utama (MyHomePage dari menu.dart)
           if (context.mounted) {
             Navigator.pushReplacement(
               context,
@@ -197,27 +198,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  final String username;
-
-  const MyHomePage({Key? key, required this.username}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Beranda'),
-      ),
-      body: Center(
-        child: Text(
-          'Selamat datang, $username!',
-          style: const TextStyle(fontSize: 18.0),
         ),
       ),
     );
