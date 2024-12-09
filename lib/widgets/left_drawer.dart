@@ -74,6 +74,19 @@ class LeftDrawer extends StatelessWidget {
           // Divider
           const Divider(),
 
+          // Back to Homepage
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Kembali ke Homepage'),
+            onTap: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/', // Route ke homepage (landing page)
+                (route) => false, // Menghapus semua rute sebelumnya
+              );
+            },
+          ),
+
           // Logout Option
           ListTile(
             leading: const Icon(Icons.logout),

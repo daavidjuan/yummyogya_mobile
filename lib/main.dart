@@ -15,10 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (_) {
-        CookieRequest request = CookieRequest();
-        return request;
-      },
+      create: (_) => CookieRequest(),
       child: MaterialApp(
         title: 'Yummyogya',
         theme: ThemeData(
@@ -27,14 +24,21 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.deepPurple,
           ).copyWith(secondary: Colors.deepPurple[400]),
         ),
-        home: const LoginPage(),
+        // Periksa status login dan arahkan ke halaman yang sesuai
+        home: Consumer<CookieRequest>(
+          builder: (context, request, child) {
+            // Jika user sudah login, arahkan ke MyHomePage
+            return request.loggedIn
+                ? const MyHomePage(
+                    username: 'User') // Ganti dengan username dinamis jika ada
+                : const LoginPage(); // Jika belum login, tetap ke LoginPage
+          },
+        ),
         routes: {
-          '/menu': (context) =>
-              const MyHomePage(username: 'User'), // Rute ke halaman menu
+          '/menu': (context) => const MyHomePage(username: 'User'),
           '/search': (context) => const SearchPage(username: 'User'),
-          // Rute ke halaman search
-          // '/wishlist' : (context) => const WishlistPage(),
-          // '/dashboard' (context) => const DashboardPage(),
+          // '/wishlist': (context) => const WishlistPage(),
+          // '/dashboard': (context) => const DashboardPage(),
         },
       ),
     );
