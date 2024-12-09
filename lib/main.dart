@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/menu': (context) =>
               const MyHomePage(username: 'User'), // Rute ke halaman menu
-          '/search': (context) => const SearchPage(), // Rute ke halaman search
+          '/search': (context) => const SearchPage(username: 'User'),
+          // Rute ke halaman search
           // '/wishlist' : (context) => const WishlistPage(),
           // '/dashboard' (context) => const DashboardPage(),
         },
