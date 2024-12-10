@@ -81,7 +81,7 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushNamedAndRemoveUntil(
                 context,
-                '/', // Route ke homepage (landing page)
+                '/menu', // Route ke homepage (landing page)
                 (route) => false, // Menghapus semua rute sebelumnya
               );
             },
