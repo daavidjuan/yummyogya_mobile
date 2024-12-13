@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:yummyogya_mobile/widgets/left_drawer.dart'; // Pastikan path menuju `left_drawer.dart` sesuai dengan struktur folder Anda.
+import 'package:yummyogya_mobile/widgets/left_drawer.dart';
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  final String username; // Parameter untuk nama pengguna
+
+  const MyHomePage({Key? key, required this.username}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,8 @@ class MyHomePage extends StatelessWidget {
         title: const Text('YummyYogya'),
         backgroundColor: Colors.orange,
       ),
-      drawer: const LeftDrawer(), // Tambahkan drawer
+      drawer:
+          LeftDrawer(username: username), // Kirim nama pengguna ke LeftDrawer
       body: SingleChildScrollView(
         child: Column(
           children: [

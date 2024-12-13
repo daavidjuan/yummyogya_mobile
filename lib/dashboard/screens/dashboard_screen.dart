@@ -1,242 +1,230 @@
 import 'package:flutter/material.dart';
-import 'add_food_screen.dart'; // Halaman untuk menambah makanan
-import 'edit_food_screen.dart'; // Halaman untuk edit makanan
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'edit_food_screen.dart';
+import 'add_food_screen.dart'; // Import layar tambah makanan
+import '/dashboard/models/food_entry.dart'; // Import model FoodEntry
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  List<dynamic> foods = []; // List untuk menampung data makanan
-  bool isAscending = true; // Default sorting order
-  String sortBy = 'name'; // Default sorting by name
+  late Future<List<FoodEntry>> _foodEntries;
+  String _sortBy = 'Name';
+  bool _ascending = true;
 
-  // Fungsi untuk menambahkan makanan baru ke dalam list
-  void _addFood(Map<String, dynamic> newFood) {
-    setState(() {
-      foods.add(newFood); // Menambahkan makanan baru ke list
-    });
+  @override
+  void initState() {
+    super.initState();
+    _foodEntries = fetchFoodEntries();
   }
 
-  // Fungsi untuk menghapus makanan berdasarkan index
-  void _removeFood(int index) {
-    setState(() {
-      foods.removeAt(index); // Menghapus makanan berdasarkan index
-    });
+  Future<List<FoodEntry>> fetchFoodEntries() async {
+    const String url = 'http://127.0.0.1:8000/dashboard/foods/';
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        List<FoodEntry> foods =
+            data.map((item) => FoodEntry.fromJson(item)).toList();
+
+        foods.sort((a, b) {
+          int comparison;
+          if (_sortBy == 'Name') {
+            comparison = a.name.compareTo(b.name);
+          } else {
+            comparison = a.price.compareTo(b.price);
+          }
+          return _ascending ? comparison : -comparison;
+        });
+        return foods;
+      } else {
+        throw Exception(
+            "Failed to load foods. Status Code: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Error occurred: $e");
+    }
   }
 
-  // Fungsi untuk mengedit makanan
-  void _editFood(int index, Map<String, dynamic> updatedFood) {
-    setState(() {
-      foods[index] = updatedFood; // Mengupdate data makanan di list
-    });
+  Future<void> deleteFood(int id) async {
+    const String url = 'http://127.0.0.1:8000/dashboard/foods/';
+
+    try {
+      final response = await http.delete(Uri.parse('$url$id/'));
+
+      if (response.statusCode == 200) {
+        setState(() {
+          _foodEntries = fetchFoodEntries();
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Makanan berhasil dihapus')),
+        );
+      } else {
+        throw Exception(
+            'Failed to delete food. Status Code: ${response.statusCode}');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error occurred: $e')),
+      );
+    }
   }
 
-  // Fungsi untuk mengurutkan makanan
-  void _sortFoods() {
-    setState(() {
-      foods.sort((a, b) {
-        int comparison;
-        if (sortBy == 'name') {
-          comparison = a['name'].compareTo(b['name']);
-        } else {
-          comparison = a['price'].compareTo(b['price']);
-        }
-        return isAscending ? comparison : -comparison;
+  void _addNewFood() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddFoodScreen()),
+    );
+    if (result == true) {
+      setState(() {
+        _foodEntries =
+            fetchFoodEntries(); // Perbarui data makanan setelah tambah
       });
-    });
+    }
+  }
+
+  void _navigateToEditFoodScreen(FoodEntry food) async {
+    final updatedFood = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditFoodScreen(food: food),
+      ),
+    );
+
+    if (updatedFood != null && updatedFood is FoodEntry) {
+      setState(() {
+        _foodEntries = fetchFoodEntries(); // Perbarui data setelah edit
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard Kamu'),
-      ),
-      body: Column(
-        children: [
-          // Tombol tambah makanan
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () async {
-                // Navigasi ke halaman AddFoodScreen saat tombol ditekan
-                final newFood = await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddFoodScreen()),
-                );
-                if (newFood != null) {
-                  _addFood(newFood); // Menambahkan makanan baru ke list
-                }
-              },
-              child: const Text('Tambah Makanan Baru'),
-            ),
+        title: const Text("Food Dashboard"),
+        actions: [
+          DropdownButton<String>(
+            value: _sortBy,
+            onChanged: (value) {
+              setState(() {
+                _sortBy = value!;
+                _foodEntries = fetchFoodEntries();
+              });
+            },
+            items: const [
+              DropdownMenuItem(
+                value: 'Name',
+                child: Text('Sort by Name'),
+              ),
+              DropdownMenuItem(
+                value: 'Price',
+                child: Text('Sort by Price'),
+              ),
+            ],
           ),
-          // Opsi sorting
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Dropdown untuk memilih sorting by
-                DropdownButton<String>(
-                  value: sortBy,
-                  items: const [
-                    DropdownMenuItem(
-                        value: 'name', child: Text('Sort by Name')),
-                    DropdownMenuItem(
-                        value: 'price', child: Text('Sort by Price')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        sortBy = value;
-                        _sortFoods(); // Perbarui sorting
-                      });
-                    }
-                  },
-                ),
-                // Toggle ascending/descending
-                IconButton(
-                  icon: Icon(
-                    isAscending ? Icons.arrow_upward : Icons.arrow_downward,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isAscending = !isAscending;
-                      _sortFoods(); // Perbarui sorting
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          // List makanan dalam grid
-          Expanded(
-            child: foods.isEmpty
-                ? Center(
-                    child: const Text('Belum ada makanan di dashboard'),
-                  )
-                : GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                      childAspectRatio: 3 / 4,
-                    ),
-                    padding: const EdgeInsets.all(10),
-                    itemCount: foods.length,
-                    itemBuilder: (context, index) {
-                      final food = foods[index];
-                      return Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(12),
-                                ),
-                                child: Image.network(
-                                  food['image_url'],
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    food['name'],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.restaurant, size: 16),
-                                      const SizedBox(width: 4),
-                                      Expanded(
-                                        child: Text(
-                                          food['restaurant'],
-                                          style: const TextStyle(fontSize: 14),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    food['description'],
-                                    style: const TextStyle(
-                                        fontSize: 12, color: Colors.grey),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.star,
-                                          size: 16, color: Colors.amber),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '${food['rating']} / 5',
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () async {
-                                    final updatedFood = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            EditFoodScreen(food: food),
-                                      ),
-                                    );
-                                    if (updatedFood != null) {
-                                      _editFood(index, updatedFood);
-                                    }
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () {
-                                    _removeFood(index);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+          IconButton(
+            icon: Icon(_ascending ? Icons.arrow_upward : Icons.arrow_downward),
+            onPressed: () {
+              setState(() {
+                _ascending = !_ascending;
+                _foodEntries = fetchFoodEntries();
+              });
+            },
           ),
         ],
+      ),
+      body: FutureBuilder<List<FoodEntry>>(
+        future: _foodEntries,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text("No foods available"));
+          }
+
+          List<FoodEntry> foods = snapshot.data!;
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(8.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5, // Menampilkan 5 card per baris
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+              childAspectRatio: 2 / 3, // Menentukan rasio ukuran card
+            ),
+            itemCount: foods.length,
+            itemBuilder: (context, index) {
+              FoodEntry food = foods[index];
+
+              return Card(
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(8.0),
+                          topRight: Radius.circular(8.0),
+                        ),
+                        child: Image.network(
+                          food.imageUrl,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        food.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text("Price: \$${food.price}"),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () => _navigateToEditFoodScreen(food),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => deleteFood(food.id),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addNewFood,
+        child: const Icon(Icons.add),
+        tooltip: 'Tambah Makanan',
       ),
     );
   }

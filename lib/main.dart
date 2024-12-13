@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:yummyogya_mobile/screens/login.dart';
 import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/screens/search.dart';
 
@@ -9,22 +12,35 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.deepPurple,
-        ).copyWith(secondary: Colors.deepPurple[400]),
-        useMaterial3: true,
+    return Provider(
+      create: (_) => CookieRequest(),
+      child: MaterialApp(
+        title: 'Yummyogya',
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: Colors.deepPurple,
+          ).copyWith(secondary: Colors.deepPurple[400]),
+        ),
+        // Periksa status login dan arahkan ke halaman yang sesuai
+        home: Consumer<CookieRequest>(
+          builder: (context, request, child) {
+            // Jika user sudah login, arahkan ke MyHomePage
+            return request.loggedIn
+                ? const MyHomePage(
+                    username: 'User') // Ganti dengan username dinamis jika ada
+                : const LoginPage(); // Jika belum login, tetap ke LoginPage
+          },
+        ),
+        routes: {
+          '/menu': (context) => const MyHomePage(username: 'User'),
+          '/search': (context) => const SearchPage(username: 'User'),
+          // '/wishlist': (context) => const WishlistPage(),
+          // '/dashboard': (context) => const DashboardPage(),
+        },
       ),
-      home: MyHomePage(),
-      routes: {
-        '/search': (context) => const SearchPage(), // Halaman pencarian makanan
-        // '/edit_profile' : (context) => const
-      },
     );
   }
 }
