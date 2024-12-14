@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:yummyogya_mobile/screens/login.dart';
 import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/screens/search.dart';
+import 'package:yummyogya_mobile/wishlist/screens/wishlist_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/menu': (context) => const MyHomePage(username: 'User'),
           '/search': (context) => const SearchPage(username: 'User'),
-          // '/wishlist': (context) => const WishlistPage(),
+          '/wishlist': (context) => const WishlistPage(),
           // '/dashboard': (context) => const DashboardPage(),
         },
       ),

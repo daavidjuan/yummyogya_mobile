@@ -66,8 +66,7 @@ class LeftDrawer extends StatelessWidget {
             leading: const Icon(Icons.favorite),
             title: const Text('Wishlist'),
             onTap: () {
-              Navigator.pushNamed(context,
-                  '/wishlist'); // Route ke halaman Wishlist (on progress)
+              Navigator.pushNamed(context, '/wishlist');
             },
           ),
 
