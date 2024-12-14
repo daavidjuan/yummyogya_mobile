@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AddFoodScreen extends StatefulWidget {
   @override
@@ -14,6 +16,25 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   final _restaurantController = TextEditingController();
   final _ratingController = TextEditingController();
   final _imageUrlController = TextEditingController();
+
+  Future<void> _addFoodToDjango(Map<String, dynamic> foodData) async {
+    final url = Uri.parse('http://127.0.0.1:8000/dashboard/add_food_flutter/');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(foodData),
+      );
+
+      if (response.statusCode == 201) {
+        print("Makanan berhasil ditambahkan ke Django");
+      } else {
+        print("Gagal menambahkan makanan: ${response.body}");
+      }
+    } catch (e) {
+      print("Error saat menambahkan makanan: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +152,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                       'description': _descriptionController.text,
                       'category': _categoryController.text,
                       'restaurant': _restaurantController.text,
-                      'rating': double.parse(_ratingController.text),
+                      'rating': _ratingController.text,
                       'image_url': _imageUrlController.text,
                     };
 

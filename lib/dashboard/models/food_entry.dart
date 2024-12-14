@@ -15,9 +15,9 @@ class FoodEntry {
   final String name;
   final String description;
   final int price;
-  final String imageUrl;
-  final String restoran;
-  final String kategori;
+  final String image_url;
+  final String restaurant;
+  final String category;
   final String rating;
 
   FoodEntry({
@@ -25,9 +25,9 @@ class FoodEntry {
     required this.name,
     required this.description,
     required this.price,
-    required this.imageUrl,
-    required this.restoran,
-    required this.kategori,
+    required this.image_url,
+    required this.restaurant,
+    required this.category,
     required this.rating,
   });
 
@@ -37,9 +37,9 @@ class FoodEntry {
       name: json['name'],
       description: json['description'],
       price: json['price'],
-      imageUrl: json['image_url'] ?? '',
-      restoran: json['restaurant'] ?? '',
-      kategori: json['category'] ?? '',
+      image_url: json['image_url'] ?? '',
+      restaurant: json['restaurant'] ?? '',
+      category: json['category'] ?? '',
       rating: json['rating'] ?? '',
     );
   }
@@ -49,9 +49,9 @@ class FoodEntry {
       'name': name,
       'description': description,
       'price': price,
-      'image_url': imageUrl,
-      'restaurant': restoran,
-      'category': kategori,
+      'image_url': image_url,
+      'restaurant': restaurant,
+      'category': category,
       'rating': rating,
     };
   }

@@ -62,7 +62,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DashboardScreen(),
+                  builder: (context) => DashboardScreen(username: username),
                 ),
               );
             },
@@ -86,7 +86,7 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushNamedAndRemoveUntil(
                 context,
-                '/', // Route ke homepage (landing page)
+                '/menu', // Route ke homepage (landing page)
                 (route) => false, // Menghapus semua rute sebelumnya
               );
             },

@@ -1,10 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:yummyogya_mobile/widgets/left_drawer.dart';
+import 'package:yummyogya_mobile/widgets/bottom_nav.dart';
+import 'package:yummyogya_mobile/screens/search.dart';
 
-class MyHomePage extends StatelessWidget {
-  final String username; // Parameter untuk nama pengguna
+class MyHomePage extends StatefulWidget {
+  final String username;
 
   const MyHomePage({Key? key, required this.username}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _currentIndex = 0; // Indeks tab aktif
+
+  // Fungsi untuk mengatur navigasi saat item ditekan
+  void _onTap(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    switch (index) {
+      case 0: // Home
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHomePage(username: widget.username),
+          ),
+        );
+        break;
+      case 1: // Search
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchPage(username: widget.username),
+          ),
+        );
+        break;
+      case 2: // Profile
+        // Tambahkan logika navigasi ke ProfilePage
+        break;
+      case 3: // Article
+        // Tambahkan logika navigasi ke ArticlePage
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +54,7 @@ class MyHomePage extends StatelessWidget {
         title: const Text('YummyYogya'),
         backgroundColor: Colors.orange,
       ),
-      drawer:
-          LeftDrawer(username: username), // Kirim nama pengguna ke LeftDrawer
+      drawer: LeftDrawer(username: widget.username),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -25,8 +65,8 @@ class MyHomePage extends StatelessWidget {
                   height: 400,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(
-                          'https://via.placeholder.com/800x400'), // Ganti dengan URL gambar background
+                      image:
+                          NetworkImage('https://via.placeholder.com/800x400'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -61,7 +101,7 @@ class MyHomePage extends StatelessWidget {
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'Hadir membantu wisatawan dan masyarakat lokal menemukan makanan khas Yogyakarta. Temukan makanan legendaris maupun yang belum dikenal, serta dukung UMKM lokal!',
+                        'Hadir membantu wisatawan dan masyarakat lokal menemukan makanan khas Yogyakarta.',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -74,160 +114,13 @@ class MyHomePage extends StatelessWidget {
                 ),
               ],
             ),
-
-            // Artikel Section
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Artikel Terkini',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Mengenal Makanan Khas Yogyakarta',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Kuliner Yogyakarta memiliki akar budaya yang sangat dalam, mulai dari makanan tradisional Keraton hingga jajanan pasar yang tetap lestari hingga kini...',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade800,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        TextButton(
-                          onPressed: () {
-                            // Aksi untuk menuju halaman artikel lebih lanjut
-                            Navigator.pushNamed(context, '/article');
-                          },
-                          child: const Text(
-                            'See More',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Makanan Section
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Rekomendasi Makanan',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        foodCard(
-                            'https://via.placeholder.com/150', 'Sate Klathak'),
-                        foodCard(
-                            'https://via.placeholder.com/150', 'Gudeg Jogja'),
-                        foodCard(
-                            'https://via.placeholder.com/150', 'Bakpia Pathok'),
-                        foodCard(
-                            'https://via.placeholder.com/150', 'Nasi Kucing'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  TextButton(
-                    onPressed: () {
-                      // Aksi untuk menuju halaman pencarian makanan
-                      Navigator.pushNamed(context, '/search');
-                    },
-                    child: const Text(
-                      'Cari Makanan Lain',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+            // Artikel dan Makanan Sections
           ],
         ),
       ),
-    );
-  }
-
-  // Widget untuk card makanan
-  Widget foodCard(String imageUrl, String title) {
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      width: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 8,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(imageUrl, width: 150, height: 100, fit: BoxFit.cover),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
+      bottomNavigationBar: BottomNav(
+        currentIndex: _currentIndex,
+        onTap: _onTap,
       ),
     );
   }
