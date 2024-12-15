@@ -35,6 +35,20 @@ class _SearchPageState extends State<SearchPage> {
   String searchQuery = ""; // Query pencarian makanan
   late Future<List<Makanan>> makananFuture; // Data makanan dari server
 
+  // Variabel untuk kategori dan rentang harga
+  List<String> categories = [
+    'All',
+    'Appetizer',
+    'Main Course',
+    'Dessert',
+    'Drinks'
+  ];
+  String selectedCategory = 'All';
+
+  double minPrice = 0;
+  double maxPrice = 100000; // Sesuaikan dengan data Anda
+  RangeValues selectedPriceRange = const RangeValues(0, 100000);
+
   @override
   void initState() {
     super.initState();
@@ -80,25 +94,119 @@ class _SearchPageState extends State<SearchPage> {
       drawer: LeftDrawer(username: widget.username),
       body: Column(
         children: [
-          // Search Bar
+          // Baris yang berisi Search Bar, Dropdown Kategori, dan Tombol Rentang Harga
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Cari makanan...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+            child: Row(
+              children: [
+                // Search Bar
+                Expanded(
+                  flex: 3,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Cari makanan...',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value.toLowerCase().trim();
+                      });
+                    },
+                  ),
                 ),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  searchQuery =
-                      value.toLowerCase().trim(); // Update query pencarian
-                });
-              },
+                const SizedBox(width: 8),
+                // Dropdown Kategori
+                Expanded(
+                  flex: 2,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedCategory,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    items: categories.map((String category) {
+                      return DropdownMenuItem<String>(
+                        value: category,
+                        child: Text(category),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedCategory = newValue!;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Tombol Rentang Harga
+                IconButton(
+                  icon: const Icon(Icons.attach_money),
+                  onPressed: () async {
+                    RangeValues? result = await showDialog<RangeValues>(
+                      context: context,
+                      builder: (context) {
+                        RangeValues tempRange = selectedPriceRange;
+                        return AlertDialog(
+                          title: const Text('Pilih Rentang Harga'),
+                          content: StatefulBuilder(
+                            builder: (context, setStateDialog) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  RangeSlider(
+                                    values: tempRange,
+                                    min: minPrice,
+                                    max: maxPrice,
+                                    divisions: 100,
+                                    labels: RangeLabels(
+                                      'Rp ${tempRange.start.round()}',
+                                      'Rp ${tempRange.end.round()}',
+                                    ),
+                                    onChanged: (RangeValues values) {
+                                      setStateDialog(() {
+                                        tempRange = values;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(null);
+                              },
+                              child: const Text('Batal'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(tempRange);
+                              },
+                              child: const Text('Simpan'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    if (result != null) {
+                      setState(() {
+                        selectedPriceRange = result;
+                      });
+                    }
+                  },
+                ),
+              ],
             ),
           ),
+          // Sisanya tetap sama
           Expanded(
             child: FutureBuilder(
               future: makananFuture,
@@ -122,14 +230,29 @@ class _SearchPageState extends State<SearchPage> {
                   );
                 }
 
-                // Filter makanan berdasarkan query pencarian
+                // Filter makanan berdasarkan query pencarian, kategori, dan harga
                 final List<Makanan> allMakanan = snapshot.data as List<Makanan>;
-                final List<Makanan> makananList = searchQuery.isEmpty
+
+                // Filter berdasarkan query pencarian
+                List<Makanan> makananList = searchQuery.isEmpty
                     ? allMakanan
                     : allMakanan.where((makanan) {
                         final namaMakanan = makanan.fields.nama.toLowerCase();
                         return namaMakanan.contains(searchQuery);
                       }).toList();
+
+                // Filter berdasarkan kategori
+                if (selectedCategory != 'All') {
+                  makananList = makananList.where((makanan) {
+                    return makanan.fields.kategori == selectedCategory;
+                  }).toList();
+                }
+
+                // Filter berdasarkan rentang harga
+                makananList = makananList.where((makanan) {
+                  return makanan.fields.harga >= selectedPriceRange.start &&
+                      makanan.fields.harga <= selectedPriceRange.end;
+                }).toList();
 
                 if (makananList.isEmpty) {
                   return const Center(
@@ -246,7 +369,7 @@ class _SearchPageState extends State<SearchPage> {
                                       size: 16, color: Colors.orange),
                                   const SizedBox(width: 4),
                                   Text(
-                                    makanan.fields.rating,
+                                    makanan.fields.rating.toString(),
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey,
