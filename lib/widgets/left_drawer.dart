@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yummyogya_mobile/dashboard/screens/dashboard_screen.dart';
 
 class LeftDrawer extends StatelessWidget {
   final String username; // Parameter untuk nama pengguna
@@ -58,8 +59,12 @@ class LeftDrawer extends StatelessWidget {
             leading: const Icon(Icons.dashboard),
             title: const Text('Dashboard'),
             onTap: () {
-              Navigator.pushNamed(
-                  context, '/dashboard'); // Route ke halaman Dashboard
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DashboardScreen(username: username),
+                ),
+              );
             },
           ),
           ListTile(
