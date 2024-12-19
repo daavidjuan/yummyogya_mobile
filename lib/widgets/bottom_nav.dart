@@ -25,6 +25,10 @@ class BottomNav extends StatelessWidget {
           label: 'Wishlist',
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.newspaper),
+          label: 'Articles',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Profile',
         ),

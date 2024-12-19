@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yummyogya_mobile/dashboard/screens/dashboard_screen.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:yummyogya_mobile/screens/article.dart';
 import 'dart:convert';
 import 'package:yummyogya_mobile/screens/login.dart';
 
@@ -12,7 +13,8 @@ class LeftDrawer extends StatelessWidget {
 
   // Fungsi logout
   Future<void> logout(BuildContext context) async {
-    const String logoutUrl = 'http://127.0.0.1:8000/authentication/logout_flutter/';
+    const String logoutUrl =
+        'http://127.0.0.1:8000/authentication/logout_flutter/';
 
     try {
       final response = await http.post(Uri.parse(logoutUrl));
@@ -45,7 +47,6 @@ class LeftDrawer extends StatelessWidget {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +115,18 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushNamed(context,
                   '/wishlist'); // Route ke halaman Wishlist (on progress)
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.newspaper),
+            title: const Text('Article'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ArticleEntryPage(),
+                ),
+              );
             },
           ),
 
