@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'register.dart';
-import 'menu.dart'; // Impor file menu.dart
+import 'menu.dart'; // Impor file menu.dart sesuai kebutuhan
 
 void main() {
   runApp(const LoginApp());
@@ -21,6 +21,7 @@ class LoginApp extends StatelessWidget {
           primarySwatch: Colors.deepOrange,
         ).copyWith(secondary: Colors.orangeAccent),
       ),
+      debugShowCheckedModeBanner: false,
       home: const LoginPage(),
     );
   }
@@ -75,7 +76,6 @@ class _LoginPageState extends State<LoginPage> {
           String message = data['message'];
           String uname = data['username'];
 
-          // Navigasi ke halaman utama (MyHomePage dari menu.dart)
           if (context.mounted) {
             Navigator.pushReplacement(
               context,
@@ -89,6 +89,12 @@ class _LoginPageState extends State<LoginPage> {
                 SnackBar(content: Text("$message Selamat datang, $uname!")),
               );
           }
+        } else {
+          // Jika status dari server false
+          String errorMessage = data['message'];
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Error: $errorMessage")),
+          );
         }
       } else {
         // Gagal login
@@ -113,91 +119,162 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Login',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 30.0),
-                  TextField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      hintText: 'Masukkan username Anda',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Masukkan password Anda',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    ),
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 24.0),
-                  _isLoading
-                      ? const CircularProgressIndicator()
-                      : ElevatedButton(
-                          onPressed: _login,
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size(double.infinity, 50),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          ),
-                          child: const Text('Login'),
-                        ),
-                  const SizedBox(height: 16.0),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterPage()),
-                      );
-                    },
-                    child: Text(
-                      'Belum punya akun? Register di sini',
+      // Menghapus AppBar agar mengikuti desain template pertama
+      body: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            colors: [
+              Colors.orange.shade900,
+              Colors.orange.shade800,
+              Colors.orange.shade400,
+            ],
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 60),
+            // Bagian atas (Login, Welcome Back)
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const <Widget>[
+                    Text(
+                      "Welcome to YummYogya",
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontSize: 16.0,
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight:
+                            FontWeight.bold, // Membuat teks menjadi bold
                       ),
+                      textAlign:
+                          TextAlign.center, // Mengatur alignment teks ke tengah
                     ),
-                  ),
-                ],
+                    SizedBox(height: 10),
+                  ],
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 20),
+            // Expanded agar bagian putih di bawah bisa menyesuaikan layar
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(60),
+                      topRight: Radius.circular(60)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Column(
+                    children: <Widget>[
+                      const SizedBox(height: 40),
+                      // Container untuk field username dan password
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromRGBO(225, 95, 27, .3),
+                              blurRadius: 20,
+                              offset: Offset(0, 10),
+                            )
+                          ],
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            // Input Username
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom:
+                                      BorderSide(color: Colors.grey.shade200),
+                                ),
+                              ),
+                              child: TextField(
+                                controller: _usernameController,
+                                decoration: const InputDecoration(
+                                  hintText: "Username",
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            // Input Password
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              child: TextField(
+                                controller: _passwordController,
+                                obscureText: true,
+                                decoration: const InputDecoration(
+                                  hintText: "Password",
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      // "Forgot Password?" (Opsional, Anda boleh hapus jika tak diperlukan)
+                      Text(
+                        "Forgot Password?",
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                      const SizedBox(height: 30),
+                      // Tombol Login
+                      _isLoading
+                          ? const CircularProgressIndicator()
+                          : MaterialButton(
+                              onPressed: _login,
+                              height: 50,
+                              minWidth: double.infinity,
+                              color: Colors.orange[900],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  "Login",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                      const Spacer(),
+                      // Bagian "Belum punya akun? Register di sini"
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const RegisterPage()),
+                          );
+                        },
+                        child: Text(
+                          'Belum punya akun? Register di sini',
+                          style: TextStyle(
+                            color: Colors.orange[900],
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
