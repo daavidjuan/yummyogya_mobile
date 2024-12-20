@@ -63,6 +63,8 @@ class Fields {
         gambar: json["gambar"],
       );
 
+  get id => null;
+
   Map<String, dynamic> toJson() => {
         "nama": nama,
         "deskripsi": deskripsi,

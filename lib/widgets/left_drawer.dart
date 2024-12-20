@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:yummyogya_mobile/screens/article.dart';
 import 'dart:convert';
 import 'package:yummyogya_mobile/screens/login.dart';
+import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
 
 class LeftDrawer extends StatelessWidget {
   final String username; // Parameter untuk nama pengguna
@@ -113,8 +114,12 @@ class LeftDrawer extends StatelessWidget {
             leading: const Icon(Icons.favorite),
             title: const Text('Wishlist'),
             onTap: () {
-              Navigator.pushNamed(context,
-                  '/wishlist'); // Route ke halaman Wishlist (on progress)
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WishlistScreen(username: username),
+                ),
+              );
             },
           ),
           ListTile(

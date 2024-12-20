@@ -4,7 +4,8 @@ import '../models/wishlist_product.dart';
 import 'dart:convert';
 
 class WishlistScreen extends StatefulWidget {
-  const WishlistScreen({Key? key}) : super(key: key);
+  final String username;
+  const WishlistScreen({Key? key, required this.username}) : super(key: key);
 
   @override
   State<WishlistScreen> createState() => _WishlistScreenState();
@@ -24,15 +25,16 @@ class _WishlistScreenState extends State<WishlistScreen> {
   Future<void> fetchWishlistItems() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/wishlist/get_wishlist/'),
+        Uri.parse(
+            'http://127.0.0.1:8000/wishlist/wishlist/get_wishlist/?username=${widget.username}'),
         headers: {
           'Content-Type': 'application/json',
-          // Add your authentication headers here if needed
         },
       );
 
       if (response.statusCode == 200) {
-        final List<WishlistProduct> items = wishlistProductFromJson(response.body);
+        final List<WishlistProduct> items =
+            wishlistProductFromJson(response.body);
         setState(() {
           wishlistItems = items;
           isLoading = false;
@@ -50,14 +52,14 @@ class _WishlistScreenState extends State<WishlistScreen> {
       });
     }
   }
-
+  
   Future<void> removeFromWishlist(int foodId) async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/wishlist/wishlist/remove-from-wishlist/$foodId/'),
+        Uri.parse(
+            'http://127.0.0.1:8000/wishlist/wishlist/remove-from-wishlist/$foodId/'),
         headers: {
           'Content-Type': 'application/json',
-          // Add your authentication headers here if needed
         },
       );
 
@@ -83,16 +85,16 @@ class _WishlistScreenState extends State<WishlistScreen> {
   Future<void> updateNotes(int foodId, String notes) async {
     try {
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/wishlist/wishlist/update-notes/$foodId/'),
+        Uri.parse(
+            'http://127.0.0.1:8000/wishlist/wishlist/update-notes/$foodId/'),
         headers: {
           'Content-Type': 'application/json',
-          // Add your authentication headers here if needed
         },
         body: jsonEncode({'notes': notes}),
       );
 
       if (response.statusCode == 200) {
-        fetchWishlistItems(); // Refresh the list
+        fetchWishlistItems();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Notes updated successfully')),
         );
@@ -180,7 +182,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  const Icon(Icons.star, color: Colors.amber, size: 16),
+                                  const Icon(Icons.star,
+                                      color: Colors.amber, size: 16),
                                   Text(item.rating),
                                 ],
                               ),
@@ -221,7 +224,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
   }
 
   void _showNotesDialog(WishlistProduct item) {
-    final TextEditingController notesController = TextEditingController(text: item.notes);
+    final TextEditingController notesController =
+        TextEditingController(text: item.notes);
 
     showDialog(
       context: context,
