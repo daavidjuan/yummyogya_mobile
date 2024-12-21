@@ -7,6 +7,7 @@ import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/widgets/left_drawer.dart';
 import 'package:yummyogya_mobile/widgets/bottom_nav.dart';
 import 'package:yummyogya_mobile/wishlist/models/wishlist_product.dart';
+import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
 
 class SearchPage extends StatefulWidget {
   final String username;

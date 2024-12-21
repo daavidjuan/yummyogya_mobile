@@ -27,10 +27,12 @@ class _WishlistScreenState extends State<WishlistScreen> {
     setState(() {
       wishlistItems.add(product); // Tambahkan item ke daftar wishlist
     });
+    fetchWishlistItems();
   }
 
   Future<void> _addToWishlist(Map<String, dynamic> wishlistData) async {
-    final url = Uri.parse('http://127.0.0.1:8000/wishlist/add_wishlist_flutter/');
+    final url =
+        Uri.parse('http://127.0.0.1:8000/wishlist/add_wishlist_flutter/');
 
     try {
       final response = await http.post(
@@ -44,7 +46,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
         print(jsonResponse['message']);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Item berhasil ditambahkan ke Wishlist! Total: ${jsonResponse['wishlist_count']}'),
+            content: Text(
+                'Item berhasil ditambahkan ke Wishlist! Total: ${jsonResponse['wishlist_count']}'),
             backgroundColor: Colors.green,
           ),
         );
@@ -67,8 +70,6 @@ class _WishlistScreenState extends State<WishlistScreen> {
       );
     }
   }
-
-
 
   Future<void> fetchWishlistItems() async {
     try {
@@ -100,10 +101,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
       });
     }
   }
-  
+
   Future<void> removeFromWishlist(int foodId) async {
     try {
-      final response = await http.get(
+      final response = await http.delete(
         Uri.parse(
             'http://127.0.0.1:8000/wishlist/wishlist/remove-from-wishlist/$foodId/'),
         headers: {
@@ -119,8 +120,11 @@ class _WishlistScreenState extends State<WishlistScreen> {
           const SnackBar(content: Text('Item removed from wishlist')),
         );
       } else {
+        final errorResponse = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to remove item from wishlist')),
+          SnackBar(
+              content:
+                  Text('Failed to remove item: ${errorResponse['error']}')),
         );
       }
     } catch (e) {
@@ -284,7 +288,6 @@ class _WishlistScreenState extends State<WishlistScreen> {
       ),
     );
   }
-
 
   void _showNotesDialog(WishlistProduct item) {
     final TextEditingController notesController =
