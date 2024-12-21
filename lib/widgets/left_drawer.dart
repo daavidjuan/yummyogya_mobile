@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:yummyogya_mobile/screens/login.dart';
-import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
 import 'package:yummyogya_mobile/profilepage/screens/profile_screen.dart';
 
 class LeftDrawer extends StatelessWidget {
