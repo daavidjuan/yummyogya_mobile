@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:yummyogya_mobile/dashboard/screens/dashboard_screen.dart';
+import 'package:yummyogya_mobile/screens/article.dart';
 import 'package:yummyogya_mobile/screens/login.dart';
 import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/screens/search.dart';
@@ -39,7 +41,8 @@ class MyApp extends StatelessWidget {
           '/menu': (context) => const MyHomePage(username: 'User'),
           '/search': (context) => const SearchPage(username: 'User'),
           '/wishlist': (context) => const WishlistScreen(username: 'User'),
-          // '/dashboard': (context) => const DashboardPage(),
+          '/article': (context) => const ArticleEntryPage(),
+          '/dashboard': (context) => DashboardScreen(username: 'User'),
         },
       ),
     );

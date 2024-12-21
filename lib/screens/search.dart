@@ -38,8 +38,6 @@ class _SearchPageState extends State<SearchPage> {
     return listMakanan;
   }
 
-  
-
   int _currentIndex = 1; // Indeks untuk Search
   String searchQuery = ""; // Query pencarian makanan
   late Future<List<Makanan>> makananFuture; // Data makanan dari server
@@ -82,10 +80,10 @@ class _SearchPageState extends State<SearchPage> {
       case 1: // Search
         // Tetap di halaman ini
         break;
-      case 2: // Profile
+      case 2: // Wishlist
         // Tambahkan navigasi ke ProfilePage
         break;
-      case 3: // Article
+      case 3: // Profile
         // Tambahkan navigasi ke ArticlePage
         break;
     }
@@ -399,22 +397,27 @@ class _SearchPageState extends State<SearchPage> {
                                   ElevatedButton(
                                     onPressed: () {
                                       if (widget.addToWishlist != null) {
-                                        final WishlistProduct product = WishlistProduct(
+                                        final WishlistProduct product =
+                                            WishlistProduct(
                                           id: makanan.fields.id,
                                           nama: makanan.fields.nama,
                                           harga: makanan.fields.harga,
                                           deskripsi: makanan.fields.deskripsi,
-                                          rating: makanan.fields.rating.toString(),
+                                          rating:
+                                              makanan.fields.rating.toString(),
                                           gambar: makanan.fields.gambar,
                                           notes: '', // Default notes
                                         );
 
-                                        widget.addToWishlist!(product); // Gunakan tanda seru untuk memanggil fungsi
+                                        widget.addToWishlist!(
+                                            product); // Gunakan tanda seru untuk memanggil fungsi
                                       }
 
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
-                                          content: Text('${makanan.fields.nama} ditambahkan ke Wishlist!'),
+                                          content: Text(
+                                              '${makanan.fields.nama} ditambahkan ke Wishlist!'),
                                         ),
                                       );
                                     },
@@ -427,7 +430,6 @@ class _SearchPageState extends State<SearchPage> {
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ),
-
                                   ElevatedButton(
                                     onPressed: () {
                                       Navigator.push(

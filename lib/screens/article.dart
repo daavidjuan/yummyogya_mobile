@@ -34,7 +34,8 @@ class _ArticleEntryPageState extends State<ArticleEntryPage> {
         title: const Text('Artikel'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      drawer: const LeftDrawer(username: 'username'), // Sesuaikan dengan username Anda
+      drawer: const LeftDrawer(
+          username: 'username'), // Sesuaikan dengan username Anda
       body: FutureBuilder<List<ArticleEntry>>(
         future: fetchArticle(request),
         builder: (context, snapshot) {
@@ -59,11 +60,14 @@ class _ArticleEntryPageState extends State<ArticleEntryPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ArticleDetailPage(article: article)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ArticleDetailPage(article: article)),
                     );
                   },
                   child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -113,7 +117,8 @@ class _ArticleEntryPageState extends State<ArticleEntryPage> {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              Text(truncatedContent, style: const TextStyle(fontSize: 14)),
+                              Text(truncatedContent,
+                                  style: const TextStyle(fontSize: 14)),
                             ],
                           ),
                         ),
