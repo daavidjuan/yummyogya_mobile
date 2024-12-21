@@ -6,10 +6,17 @@ import 'package:yummyogya_mobile/screens/detail_makanan.dart';
 import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/widgets/left_drawer.dart';
 import 'package:yummyogya_mobile/widgets/bottom_nav.dart';
+import 'package:yummyogya_mobile/wishlist/models/wishlist_product.dart';
 
 class SearchPage extends StatefulWidget {
   final String username;
-  const SearchPage({Key? key, required this.username}) : super(key: key);
+  final Function(WishlistProduct)? addToWishlist; // Jadikan nullable
+
+  const SearchPage({
+    Key? key,
+    required this.username,
+    this.addToWishlist, // Tidak wajib diisi
+  }) : super(key: key);
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -30,6 +37,8 @@ class _SearchPageState extends State<SearchPage> {
     }
     return listMakanan;
   }
+
+  
 
   int _currentIndex = 1; // Indeks untuk Search
   String searchQuery = ""; // Query pencarian makanan
@@ -389,11 +398,23 @@ class _SearchPageState extends State<SearchPage> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      if (widget.addToWishlist != null) {
+                                        final WishlistProduct product = WishlistProduct(
+                                          id: makanan.fields.id,
+                                          nama: makanan.fields.nama,
+                                          harga: makanan.fields.harga,
+                                          deskripsi: makanan.fields.deskripsi,
+                                          rating: makanan.fields.rating.toString(),
+                                          gambar: makanan.fields.gambar,
+                                          notes: '', // Default notes
+                                        );
+
+                                        widget.addToWishlist!(product); // Gunakan tanda seru untuk memanggil fungsi
+                                      }
+
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                          content: Text(
-                                              '${makanan.fields.nama} ditambahkan ke Wishlist!'),
+                                          content: Text('${makanan.fields.nama} ditambahkan ke Wishlist!'),
                                         ),
                                       );
                                     },
@@ -402,10 +423,11 @@ class _SearchPageState extends State<SearchPage> {
                                       minimumSize: const Size(50, 30),
                                     ),
                                     child: const Text(
-                                      'Wishlist',
+                                      'Add to Wishlist',
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ),
+
                                   ElevatedButton(
                                     onPressed: () {
                                       Navigator.push(

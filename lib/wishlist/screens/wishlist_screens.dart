@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:yummyogya_mobile/screens/search.dart';
 import '../models/wishlist_product.dart';
 import 'dart:convert';
 
@@ -21,6 +22,53 @@ class _WishlistScreenState extends State<WishlistScreen> {
     super.initState();
     fetchWishlistItems();
   }
+
+  void addToWishlist(WishlistProduct product) {
+    setState(() {
+      wishlistItems.add(product); // Tambahkan item ke daftar wishlist
+    });
+  }
+
+  Future<void> _addToWishlist(Map<String, dynamic> wishlistData) async {
+    final url = Uri.parse('http://127.0.0.1:8000/wishlist/add_wishlist_flutter/');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(wishlistData),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        print(jsonResponse['message']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Item berhasil ditambahkan ke Wishlist! Total: ${jsonResponse['wishlist_count']}'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        print('Error: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal menambahkan item ke Wishlist'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+
 
   Future<void> fetchWishlistItems() async {
     try {
@@ -220,8 +268,23 @@ class _WishlistScreenState extends State<WishlistScreen> {
                 );
               },
             ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage(
+                username: widget.username,
+                addToWishlist: addToWishlist, // Oper callback
+              ),
+            ),
+          );
+        },
+        label: const Text('Cari Makanan'),
+      ),
     );
   }
+
 
   void _showNotesDialog(WishlistProduct item) {
     final TextEditingController notesController =
