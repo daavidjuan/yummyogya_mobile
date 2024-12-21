@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:yummyogya_mobile/screens/login.dart';
+import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
+import 'package:yummyogya_mobile/profilepage/screens/profile_screen.dart';
 
 class LeftDrawer extends StatelessWidget {
   final String username; // Parameter untuk nama pengguna
@@ -81,8 +83,12 @@ class LeftDrawer extends StatelessWidget {
             leading: const Icon(Icons.edit),
             title: const Text('Edit Profil'),
             onTap: () {
-              Navigator.pushNamed(
-                  context, '/editProfile'); // Route ke halaman Edit Profil
+               Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileScreen(username: username),
+                ),
+              );
             },
           ),
 
