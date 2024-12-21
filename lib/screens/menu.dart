@@ -5,6 +5,7 @@ import 'package:yummyogya_mobile/screens/search.dart';
 import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
 import 'package:yummyogya_mobile/screens/article.dart';
 import 'package:yummyogya_mobile/dashboard/screens/dashboard_screen.dart';
+import 'package:yummyogya_mobile/profilepage/screens/profile_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   final String username;
@@ -49,7 +50,12 @@ class _MyHomePageState extends State<MyHomePage> {
         );
         break;
       case 3: // Profile (Open Right Drawer)
-        _scaffoldKey.currentState!.openEndDrawer(); // Membuka drawer kanan
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileScreen(username: widget.username),
+          ),
+        );
         break;
     }
   }
