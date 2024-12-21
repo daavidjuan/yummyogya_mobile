@@ -46,10 +46,10 @@ class _SearchPageState extends State<SearchPage> {
   // Variabel untuk kategori dan rentang harga
   List<String> categories = [
     'All',
-    'Appetizer',
-    'Main Course',
-    'Dessert',
-    'Drinks'
+    'Makanan',
+    'Minuman',
+    'Jajanan',
+    'Oleh-oleh',
   ];
   String selectedCategory = 'All';
 
@@ -93,6 +93,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final TextEditingController _searchController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -137,6 +138,11 @@ class _SearchPageState extends State<SearchPage> {
                           horizontal: 12, vertical: 8),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Colors.orange),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Colors.orange),
                       ),
                     ),
                     items: categories.map((String category) {
@@ -249,10 +255,12 @@ class _SearchPageState extends State<SearchPage> {
                         return namaMakanan.contains(searchQuery);
                       }).toList();
 
-                // Filter berdasarkan kategori
+                // Filter berdasarkan kategori (dengan substring)
                 if (selectedCategory != 'All') {
                   makananList = makananList.where((makanan) {
-                    return makanan.fields.kategori == selectedCategory;
+                    return makanan.fields.kategori
+                        .toLowerCase()
+                        .contains(selectedCategory.toLowerCase());
                   }).toList();
                 }
 
