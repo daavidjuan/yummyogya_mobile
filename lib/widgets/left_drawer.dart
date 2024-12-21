@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:yummyogya_mobile/dashboard/screens/dashboard_screen.dart';
-
 import 'package:http/http.dart' as http;
-import 'package:yummyogya_mobile/screens/article.dart';
 import 'dart:convert';
 import 'package:yummyogya_mobile/screens/login.dart';
-import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
 
 class LeftDrawer extends StatelessWidget {
   final String username; // Parameter untuk nama pengguna
@@ -81,57 +77,12 @@ class LeftDrawer extends StatelessWidget {
             ),
           ),
 
-          // Menu Items
-          ListTile(
-            leading: const Icon(Icons.search),
-            title: const Text('Cari Makanan'),
-            onTap: () {
-              Navigator.pushNamed(
-                  context, '/search'); // Route ke halaman Cari Makanan
-            },
-          ),
           ListTile(
             leading: const Icon(Icons.edit),
             title: const Text('Edit Profil'),
             onTap: () {
               Navigator.pushNamed(
                   context, '/editProfile'); // Route ke halaman Edit Profil
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.dashboard),
-            title: const Text('Dashboard'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DashboardScreen(username: username),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.favorite),
-            title: const Text('Wishlist'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WishlistScreen(username: username),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.newspaper),
-            title: const Text('Article'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ArticleEntryPage(),
-                ),
-              );
             },
           ),
 

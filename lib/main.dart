@@ -24,11 +24,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSwatch(
-            primarySwatch:
-                Colors.orange, // Mengubah primarySwatch menjadi oranye
-          ).copyWith(
-            secondary: Colors.orangeAccent, // Warna sekunder yang sesuai
-          ),
+            primarySwatch: Colors.deepPurple,
+          ).copyWith(secondary: Colors.deepPurple[400]),
         ),
         // Periksa status login dan arahkan ke halaman yang sesuai
         home: Consumer<CookieRequest>(

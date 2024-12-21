@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:yummyogya_mobile/widgets/left_drawer.dart';
 import 'package:yummyogya_mobile/widgets/bottom_nav.dart';
+import 'package:yummyogya_mobile/screens/search.dart';
+import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
+import 'package:yummyogya_mobile/screens/article.dart';
+import 'package:yummyogya_mobile/dashboard/screens/dashboard_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   final String username;
@@ -20,32 +24,49 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     switch (index) {
-      case 0:
-        Navigator.pushReplacementNamed(context, '/menu');
+      case 0: // Home
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHomePage(username: widget.username),
+          ),
+        );
         break;
-      case 1:
-        Navigator.pushReplacementNamed(context, '/search');
+      case 1: // Search
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchPage(username: widget.username),
+          ),
+        );
         break;
-      case 2:
-        Navigator.pushReplacementNamed(context, '/wishlist');
+      case 2: // Wishlist
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WishlistScreen(username: widget.username),
+          ),
+        );
         break;
-      case 3:
-        Navigator.pushReplacementNamed(context, '/article');
-        break;
-      case 4:
-        Navigator.pushReplacementNamed(context, '/dashboard');
+      case 3: // Profile (Open Right Drawer)
+        _scaffoldKey.currentState!.openEndDrawer(); // Membuka drawer kanan
         break;
     }
   }
 
+  // GlobalKey untuk mengontrol Scaffold agar bisa membuka endDrawer
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey, // Tambahkan GlobalKey di sini
       appBar: AppBar(
         title: const Text('YummyYogya'),
         backgroundColor: Colors.orange,
       ),
-      drawer: LeftDrawer(username: widget.username),
+      // Gunakan endDrawer untuk menampilkan drawer dari kanan
+      endDrawer: LeftDrawer(username: widget.username),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -53,10 +74,11 @@ class _MyHomePageState extends State<MyHomePage> {
             Stack(
               children: [
                 Container(
+                  height: 200,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage(
-                          'https://www.google.com/url?sa=i&url=https%3A%2F%2Fareajogja.wordpress.com%2F2020%2F09%2F29%2Fobyek-wisata-sejarah-dan-budaya-di-yogyakarta%2F&psig=AOvVaw16U_xxNGhRsOr8nw8fNPCz&ust=1734837193981000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCNj3tLjyt4oDFQAAAAAdAAAAABAK'),
+                          'https://via.placeholder.com/800x400'), // URL gambar
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -94,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       children: const [
                         Text(
-                          'YummyYogya',
+                          'YummYogya',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -116,7 +138,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
 
             // Row of Icon Buttons
@@ -125,45 +146,60 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  // Search Icon
                   _buildFeatureButton(
                     icon: Icons.search,
                     label: 'Search',
                     onPressed: () {
-                      Navigator.pushNamed(context, '/search');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SearchPage(username: widget.username),
+                        ),
+                      );
                     },
                   ),
-                  // Wishlist Icon
                   _buildFeatureButton(
                     icon: Icons.favorite,
                     label: 'Wishlist',
                     onPressed: () {
-                      Navigator.pushNamed(context, '/wishlist');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              WishlistScreen(username: widget.username),
+                        ),
+                      );
                     },
                   ),
-                  // Article Icon
                   _buildFeatureButton(
                     icon: Icons.newspaper,
                     label: 'Article',
                     onPressed: () {
-                      Navigator.pushNamed(context, '/article');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ArticleEntryPage(),
+                        ),
+                      );
                     },
                   ),
-                  // Dashboard Icon
                   _buildFeatureButton(
                     icon: Icons.dashboard,
                     label: 'Dashboard',
                     onPressed: () {
-                      Navigator.pushNamed(context, '/dashboard');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DashboardScreen(username: widget.username),
+                        ),
+                      );
                     },
                   ),
                 ],
               ),
             ),
-
-            const SizedBox(height: 20),
-
-            // Additional Content (if any)
           ],
         ),
       ),
@@ -174,7 +210,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // Helper Widget for Feature Buttons
   Widget _buildFeatureButton({
     required IconData icon,
     required String label,

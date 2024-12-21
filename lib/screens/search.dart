@@ -79,16 +79,29 @@ class _SearchPageState extends State<SearchPage> {
         );
         break;
       case 1: // Search
-        // Tetap di halaman ini
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchPage(username: widget.username),
+          ),
+        );
         break;
       case 2: // Wishlist
-        // Tambahkan navigasi ke ProfilePage
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WishlistScreen(username: widget.username),
+          ),
+        );
         break;
-      case 3: // Profile
-        // Tambahkan navigasi ke ArticlePage
+      case 3: // Profile (Open Right Drawer)
+        _scaffoldKey.currentState!.openEndDrawer(); // Membuka drawer kanan
         break;
     }
   }
+
+  // GlobalKey untuk mengontrol Scaffold agar bisa membuka endDrawer
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +113,6 @@ class _SearchPageState extends State<SearchPage> {
         title: const Text('Cari Makanan'),
         backgroundColor: Colors.orange,
       ),
-      drawer: LeftDrawer(username: widget.username),
       body: Column(
         children: [
           // Baris yang berisi Search Bar, Dropdown Kategori, dan Tombol Rentang Harga
@@ -418,20 +430,21 @@ class _SearchPageState extends State<SearchPage> {
                                           notes: '', // Default notes
                                         );
 
-                                        widget.addToWishlist!(
-                                            product); // Gunakan tanda seru untuk memanggil fungsi
+                                        widget.addToWishlist!(product);
                                       }
 
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
-                                          content: Text(
-                                              '${makanan.fields.nama} ditambahkan ke Wishlist!'),
-                                        ),
+                                            content: Text(
+                                                '${makanan.fields.nama} ditambahkan ke Wishlist!')),
                                       );
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.orange,
+                                      backgroundColor:
+                                          Colors.orange, // Warna latar tombol
+                                      foregroundColor: Colors
+                                          .white, // Warna teks menjadi putih
                                       minimumSize: const Size(50, 30),
                                     ),
                                     child: const Text(
@@ -450,7 +463,10 @@ class _SearchPageState extends State<SearchPage> {
                                       );
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue,
+                                      backgroundColor:
+                                          Colors.blue, // Warna latar tombol
+                                      foregroundColor: Colors
+                                          .white, // Warna teks menjadi putih
                                       minimumSize: const Size(50, 30),
                                     ),
                                     child: const Text(
