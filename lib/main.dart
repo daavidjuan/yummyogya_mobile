@@ -7,6 +7,7 @@ import 'package:yummyogya_mobile/screens/login.dart';
 import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/screens/search.dart';
 import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
+import 'package:yummyogya_mobile/profilepage/screens/profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
           '/wishlist': (context) => const WishlistScreen(username: 'User'),
           '/article': (context) => const ArticleEntryPage(),
           '/dashboard': (context) => DashboardScreen(username: 'User'),
+          '/profile': (context) => ProfileScreen(username: 'User'),
         },
       ),
     );
