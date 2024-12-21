@@ -7,6 +7,7 @@ import 'package:yummyogya_mobile/screens/login.dart';
 import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/screens/search.dart';
 import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 
 void main() {
   runApp(const MyApp());
@@ -27,14 +28,16 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.deepPurple,
           ).copyWith(secondary: Colors.deepPurple[400]),
         ),
-        // Periksa status login dan arahkan ke halaman yang sesuai
-        home: Consumer<CookieRequest>(
-          builder: (context, request, child) {
-            // Jika user sudah login, arahkan ke MyHomePage
-            return request.loggedIn
-                ? const MyHomePage(
-                    username: 'User') // Ganti dengan username dinamis jika ada
-                : const LoginPage(); // Jika belum login, tetap ke LoginPage
+        home: FutureBuilder<bool>(
+          future: _checkLoginStatus(), // Memeriksa status login
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // Tampilkan loading sementara
+            } else if (snapshot.hasData && snapshot.data == true) {
+              return const MyHomePage(username: 'User'); // Jika sudah login
+            } else {
+              return const LoginPage(); // Jika belum login
+            }
           },
         ),
         routes: {
@@ -43,8 +46,28 @@ class MyApp extends StatelessWidget {
           '/wishlist': (context) => const WishlistScreen(username: 'User'),
           '/article': (context) => const ArticleEntryPage(),
           '/dashboard': (context) => DashboardScreen(username: 'User'),
+          
         },
       ),
     );
+  }
+
+  // Fungsi untuk memeriksa status login
+  Future<bool> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false; // Ambil status login
+    return isLoggedIn;
+  }
+
+  // Fungsi untuk menyimpan status login saat berhasil login
+  static Future<void> saveLoginStatus(bool isLoggedIn) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', isLoggedIn); // Simpan status login
+  }
+
+  // Fungsi untuk logout dan menghapus status login
+  static Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('isLoggedIn'); // Hapus status login saat logout
   }
 }

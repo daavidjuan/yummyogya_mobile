@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 import 'register.dart';
 import 'menu.dart'; // Impor file menu.dart sesuai kebutuhan
 
@@ -39,6 +40,26 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _checkLoggedInStatus(); // Cek apakah user sudah login saat aplikasi dimulai
+  }
+
+  // Cek status login pengguna dari SharedPreferences
+  Future<void> _checkLoggedInStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? username = prefs.getString('username');
+
+    if (username != null) {
+      // Jika username ada di SharedPreferences, langsung menuju halaman utama
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage(username: username)),
+      );
+    }
+  }
+
   Future<void> _login() async {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
@@ -56,7 +77,6 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    // URL endpoint Django
     const String url = 'http://127.0.0.1:8000/authentication/login_flutter/';
 
     try {
@@ -69,12 +89,15 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (response.statusCode == 200) {
-        // Parsing respon JSON
         final Map<String, dynamic> data = jsonDecode(response.body);
 
         if (data['status'] == true) {
           String message = data['message'];
           String uname = data['username'];
+
+          // Simpan username ke SharedPreferences untuk mempertahankan status login
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString('username', uname);
 
           if (context.mounted) {
             Navigator.pushReplacement(
@@ -90,14 +113,12 @@ class _LoginPageState extends State<LoginPage> {
               );
           }
         } else {
-          // Jika status dari server false
           String errorMessage = data['message'];
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Error: $errorMessage")),
           );
         }
       } else {
-        // Gagal login
         final Map<String, dynamic> data = jsonDecode(response.body);
         String errorMessage = data['message'];
         ScaffoldMessenger.of(context).showSnackBar(
@@ -105,7 +126,6 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      // Jika ada error saat koneksi
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Terjadi kesalahan: $e")),
       );
@@ -119,7 +139,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Menghapus AppBar agar mengikuti desain template pertama
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -136,7 +155,6 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 60),
-            // Bagian atas (Login, Welcome Back)
             Padding(
               padding: const EdgeInsets.all(20),
               child: Center(
@@ -148,11 +166,9 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 32,
-                        fontWeight:
-                            FontWeight.bold, // Membuat teks menjadi bold
+                        fontWeight: FontWeight.bold,
                       ),
-                      textAlign:
-                          TextAlign.center, // Mengatur alignment teks ke tengah
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 10),
                   ],
@@ -160,7 +176,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 20),
-            // Expanded agar bagian putih di bawah bisa menyesuaikan layar
             Expanded(
               child: Container(
                 decoration: const BoxDecoration(
@@ -174,7 +189,6 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     children: <Widget>[
                       const SizedBox(height: 40),
-                      // Container untuk field username dan password
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -189,7 +203,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: Column(
                           children: <Widget>[
-                            // Input Username
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
@@ -207,7 +220,6 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            // Input Password
                             Container(
                               padding: const EdgeInsets.all(10),
                               child: TextField(
@@ -224,13 +236,11 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      // "Forgot Password?" (Opsional, Anda boleh hapus jika tak diperlukan)
                       Text(
                         "Forgot Password?",
                         style: TextStyle(color: Colors.grey.shade600),
                       ),
                       const SizedBox(height: 30),
-                      // Tombol Login
                       _isLoading
                           ? const CircularProgressIndicator()
                           : MaterialButton(
@@ -251,7 +261,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                       const Spacer(),
-                      // Bagian "Belum punya akun? Register di sini"
                       GestureDetector(
                         onTap: () {
                           Navigator.push(

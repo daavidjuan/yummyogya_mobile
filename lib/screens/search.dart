@@ -8,6 +8,8 @@ import 'package:yummyogya_mobile/widgets/left_drawer.dart';
 import 'package:yummyogya_mobile/widgets/bottom_nav.dart';
 import 'package:yummyogya_mobile/wishlist/models/wishlist_product.dart';
 import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class SearchPage extends StatefulWidget {
   final String username;
@@ -37,6 +39,92 @@ class _SearchPageState extends State<SearchPage> {
       }
     }
     return listMakanan;
+  }
+
+  Future<void> _handleAddToWishlist(Makanan makanan) async {
+    final request = context.read<CookieRequest>();
+
+    try {
+      // Menyiapkan data dalam format JSON
+      final requestData = {
+        'username': widget.username,
+        'food_id': makanan.pk.toString(),
+        'food_name': makanan.fields.nama,
+        'food_price': makanan.fields.harga.toString(),
+        'food_image': makanan.fields.gambar,
+        'food_rating': makanan.fields.rating.toString(),
+        'notes': '', // Default empty notes
+      };
+
+      // Melakukan POST request
+      final response = await http.post(
+        Uri.parse('http://127.0.0.1:8000/wishlist/wishlist/add_wishlist_flutter/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestData),
+      );
+
+      // Debugging: Print status code dan body respons
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      // Memastikan respons berbentuk JSON
+      var responseBody = jsonDecode(response.body);
+      print("Decoded Response Body: $responseBody");
+
+      // Memeriksa apakah respons mengandung 'message'
+      if (response.statusCode == 200 && responseBody.containsKey('message')) {
+        // Membuat objek WishlistProduct
+        final product = WishlistProduct(
+          id: makanan.pk,
+          nama: makanan.fields.nama,
+          harga: makanan.fields.harga,
+          deskripsi: makanan.fields.deskripsi,
+          rating: makanan.fields.rating.toString(),
+          gambar: makanan.fields.gambar,
+          notes: '',
+        );
+
+        // Memanggil callback addToWishlist jika ada
+        if (widget.addToWishlist != null) {
+          widget.addToWishlist!(product);
+        }
+
+        // Menampilkan pesan sukses
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${makanan.fields.nama} berhasil ditambahkan ke Wishlist!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        // Menampilkan pesan error jika gagal
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Gagal menambahkan ${makanan.fields.nama} ke Wishlist'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Menangani error jika ada
+      print("Error: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Terjadi kesalahan saat menambahkan ke wishlist'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      // Kode di dalam block finally ini akan dieksekusi setelah try selesai,
+      // baik sukses atau gagal.
+      print("Request to add to wishlist completed.");
+    }
   }
 
   int _currentIndex = 1; // Indeks untuk Search
@@ -416,40 +504,14 @@ class _SearchPageState extends State<SearchPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   ElevatedButton(
-                                    onPressed: () {
-                                      if (widget.addToWishlist != null) {
-                                        final WishlistProduct product =
-                                            WishlistProduct(
-                                          id: makanan.fields.id,
-                                          nama: makanan.fields.nama,
-                                          harga: makanan.fields.harga,
-                                          deskripsi: makanan.fields.deskripsi,
-                                          rating:
-                                              makanan.fields.rating.toString(),
-                                          gambar: makanan.fields.gambar,
-                                          notes: '', // Default notes
-                                        );
-
-                                        widget.addToWishlist!(product);
-                                      }
-
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                '${makanan.fields.nama} ditambahkan ke Wishlist!')),
-                                      );
-                                    },
+                                    onPressed: () => _handleAddToWishlist(makanan),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Colors.orange, // Warna latar tombol
-                                      foregroundColor: Colors
-                                          .white, // Warna teks menjadi putih
-                                      minimumSize: const Size(50, 30),
+                                    backgroundColor: Colors.orange,
+                                    minimumSize: const Size(50, 30),
                                     ),
                                     child: const Text(
-                                      'Add to Wishlist',
-                                      style: TextStyle(fontSize: 12),
+                                    'Add to Wishlist',
+                                    style: TextStyle(fontSize: 12),
                                     ),
                                   ),
                                   ElevatedButton(

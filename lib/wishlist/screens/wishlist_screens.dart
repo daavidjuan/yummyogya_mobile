@@ -51,6 +51,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
             backgroundColor: Colors.green,
           ),
         );
+        fetchWishlistItems();
       } else {
         print('Error: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
