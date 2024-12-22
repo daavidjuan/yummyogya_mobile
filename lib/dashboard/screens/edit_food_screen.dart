@@ -87,15 +87,12 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
 
       if (response.statusCode == 200) {
         // Jika pembaruan berhasil
-        print("Makanan berhasil diperbarui di Django.");
         return true;
       } else {
         // Jika terjadi kesalahan
-        print("Gagal memperbarui makanan: ${response.body}");
         return false;
       }
     } catch (e) {
-      print("Error saat memperbarui makanan: $e");
       return false;
     }
   }

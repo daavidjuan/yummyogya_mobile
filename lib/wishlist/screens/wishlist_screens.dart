@@ -137,20 +137,27 @@ class _WishlistScreenState extends State<WishlistScreen> {
   }
 
   Future<void> updateNotes(int foodId, String notes) async {
+    final String url =
+        'http://127.0.0.1:8000/wishlist/wishlist/update-notes/$foodId/';
     try {
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/wishlist/wishlist/update-notes/$foodId/'),
+        Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'username': widget.username,  // Tambahkan username
           'notes': notes,
         }),
       );
 
       if (response.statusCode == 200) {
-        fetchWishlistItems();
+        setState(() {
+          // Perbarui catatan di list lokal
+          final index = wishlistItems.indexWhere((item) => item.id == foodId);
+          if (index != -1) {
+            wishlistItems[index] = wishlistItems[index].copyWith(notes: notes);
+          }
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Notes updated successfully')),
         );
@@ -214,8 +221,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
                 return Card(
                   margin: const EdgeInsets.all(8.0),
                   shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: Colors.orange, width: 1.5), // Outline oranye
-                    borderRadius: BorderRadius.circular(10), // Radius melengkung
+                    side: const BorderSide(
+                        color: Colors.orange, width: 1.5), // Outline oranye
+                    borderRadius:
+                        BorderRadius.circular(10), // Radius melengkung
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -273,7 +282,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                 const SizedBox(height: 4),
                                 Text(
                                   'Notes: ${item.notes}',
-                                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey),
                                 ),
                               ],
                             ],
@@ -315,7 +325,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
             ),
           );
         },
-        label: const Text('Cari Makanan', style: TextStyle(color: Colors.white)),
+        label:
+            const Text('Cari Makanan', style: TextStyle(color: Colors.white)),
         icon: const Icon(Icons.search, color: Colors.white),
       ),
     );

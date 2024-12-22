@@ -52,11 +52,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
         return true;
       } else {
-        print("Fetch API Failed with status: ${response.statusCode}");
         return false;
       }
     } catch (e) {
-      print("Error in fetchDashboardData: $e");
       return false;
     }
   }
@@ -161,9 +159,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       } else {
         print("Gagal menambahkan makanan: ${response.body}");
       }
-    } catch (e) {
-      print("Error saat menambahkan makanan: $e");
-    }
+    } catch (e) {}
   }
 
   Future<void> _updateFoodToDjango(FoodEntry food) async {
