@@ -28,6 +28,10 @@ class BottomNav extends StatelessWidget {
           icon: Icon(Icons.person),
           label: 'Profile',
         ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.newspaper),
+          label: 'Article',
+        )
       ],
       currentIndex: currentIndex, // Indeks halaman aktif
       selectedItemColor: Colors.orange,

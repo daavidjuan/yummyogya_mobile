@@ -33,7 +33,7 @@ class ArticleEntry {
 }
 
 class Fields {
-    int user;
+    String user;
     String title;
     String content;
     DateTime publishedDate;
@@ -48,7 +48,7 @@ class Fields {
     });
 
     factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-        user: json["user"],
+        user: json["user"].toString(),
         title: json["title"],
         content: json["content"],
         publishedDate: DateTime.parse(json["published_date"]),
