@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:yummyogya_mobile/dashboard/screens/dashboard_screen.dart';
-import 'package:yummyogya_mobile/screens/article.dart';
+import 'package:yummyogya_mobile/article/screens/article.dart';
 import 'package:yummyogya_mobile/screens/login.dart';
 import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/screens/search.dart';

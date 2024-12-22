@@ -3,7 +3,7 @@ import 'package:yummyogya_mobile/widgets/left_drawer.dart';
 import 'package:yummyogya_mobile/widgets/bottom_nav.dart';
 import 'package:yummyogya_mobile/screens/search.dart';
 import 'package:yummyogya_mobile/wishlist/screens/wishlist_screens.dart';
-import 'package:yummyogya_mobile/screens/article.dart';
+import 'package:yummyogya_mobile/article/screens/article.dart';
 import 'package:yummyogya_mobile/dashboard/screens/dashboard_screen.dart';
 import 'package:yummyogya_mobile/profilepage/screens/profile_screen.dart';
 
