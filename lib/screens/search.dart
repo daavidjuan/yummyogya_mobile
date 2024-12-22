@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:yummyogya_mobile/models/makanan_entry.dart';
-import 'package:yummyogya_mobile/screens/detail_makanan.dart';
+import 'package:yummyogya_mobile/detail/screens/detail_makanan.dart';
 import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/widgets/left_drawer.dart';
 import 'package:yummyogya_mobile/widgets/bottom_nav.dart';
@@ -58,7 +58,8 @@ class _SearchPageState extends State<SearchPage> {
 
       // Melakukan POST request
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/wishlist/wishlist/add_wishlist_flutter/'),
+        Uri.parse(
+            'http://127.0.0.1:8000/wishlist/wishlist/add_wishlist_flutter/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestData),
       );
@@ -93,7 +94,8 @@ class _SearchPageState extends State<SearchPage> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${makanan.fields.nama} berhasil ditambahkan ke Wishlist!'),
+              content: Text(
+                  '${makanan.fields.nama} berhasil ditambahkan ke Wishlist!'),
               backgroundColor: Colors.green,
             ),
           );
@@ -103,7 +105,8 @@ class _SearchPageState extends State<SearchPage> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Gagal menambahkan ${makanan.fields.nama} ke Wishlist'),
+              content:
+                  Text('Gagal menambahkan ${makanan.fields.nama} ke Wishlist'),
               backgroundColor: Colors.red,
             ),
           );
@@ -504,14 +507,15 @@ class _SearchPageState extends State<SearchPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   ElevatedButton(
-                                    onPressed: () => _handleAddToWishlist(makanan),
+                                    onPressed: () =>
+                                        _handleAddToWishlist(makanan),
                                     style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.orange,
-                                    minimumSize: const Size(50, 30),
+                                      backgroundColor: Colors.orange,
+                                      minimumSize: const Size(50, 30),
                                     ),
                                     child: const Text(
-                                    'Add to Wishlist',
-                                    style: TextStyle(fontSize: 12),
+                                      'Add to Wishlist',
+                                      style: TextStyle(fontSize: 12),
                                     ),
                                   ),
                                   ElevatedButton(
@@ -519,8 +523,9 @@ class _SearchPageState extends State<SearchPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              DetailPage(makanan: makanan),
+                                          builder: (context) => DetailPage(
+                                              makanan: makanan,
+                                              username: widget.username),
                                         ),
                                       );
                                     },
