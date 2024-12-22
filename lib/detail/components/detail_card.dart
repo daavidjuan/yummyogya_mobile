@@ -39,14 +39,9 @@ class DetailCard extends StatelessWidget {
           style: const TextStyle(fontSize: 20, color: Colors.green),
         ),
         const SizedBox(height: 8),
-        Row(
-          children: [
-            Text(
-              'Rating: ${foodData['average_rating']}',
-              style: const TextStyle(fontSize: 18, color: Colors.orange),
-            ),
-            const SizedBox(width: 8)
-          ],
+        Text(
+          'Rating: ${foodData['rating']}',
+          style: const TextStyle(fontSize: 18, color: Colors.orange),
         ),
         const SizedBox(height: 16),
         Text(
