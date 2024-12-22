@@ -42,14 +42,10 @@ class DetailCard extends StatelessWidget {
         Row(
           children: [
             Text(
-              'Rating: ${foodData['rating']}',
+              'Rating: ${foodData['average_rating']}',
               style: const TextStyle(fontSize: 18, color: Colors.orange),
             ),
-            const SizedBox(width: 8),
-            Text(
-              'Rata-rata: ${foodData['average_rating']}',
-              style: const TextStyle(fontSize: 18, color: Colors.orange),
-            ),
+            const SizedBox(width: 8)
           ],
         ),
         const SizedBox(height: 16),
