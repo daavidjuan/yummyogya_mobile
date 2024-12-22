@@ -138,12 +138,14 @@ class _WishlistScreenState extends State<WishlistScreen> {
   Future<void> updateNotes(int foodId, String notes) async {
     try {
       final response = await http.post(
-        Uri.parse(
-            'http://127.0.0.1:8000/wishlist/wishlist/update-notes/$foodId/'),
+        Uri.parse('http://127.0.0.1:8000/wishlist/wishlist/update-notes/$foodId/'),
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({'notes': notes}),
+        body: jsonEncode({
+          'username': widget.username,  // Tambahkan username
+          'notes': notes,
+        }),
       );
 
       if (response.statusCode == 200) {
