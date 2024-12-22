@@ -1,14 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:yummyogya_mobile/profilepage/models/change_password.dart';
+import 'package:yummyogya_mobile/profilepage/models/edit_profile.dart';
 
 class ProfileHeader extends StatelessWidget {
   final Map<String, dynamic> profileData;
   final String baseUrl;
+  final Function onProfileUpdated;
 
   const ProfileHeader({
     super.key,
     required this.profileData,
     required this.baseUrl,
+    required this.onProfileUpdated,
   });
+
+  void _openEditProfileModal(BuildContext currentContext) async {
+    final result = await showModalBottomSheet(
+      context: currentContext,
+      isScrollControlled: true,
+      builder: (modalContext) => ProfileEditModal(
+        baseUrl: baseUrl,
+        username: profileData['username'],
+        currentBio: profileData['bio'] ?? '',
+        currentProfilePhoto: profileData['profile_photo'] ?? '',
+      ),
+    );
+
+    if (result == true) {
+      if (currentContext.mounted) {
+        ScaffoldMessenger.of(currentContext).showSnackBar(
+          const SnackBar(content: Text('Profil berhasil diperbarui!')),
+        );
+        onProfileUpdated();
+      }
+    }
+  }
+
+  void _openChangePasswordModal(BuildContext currentContext) async {
+    final result = await showModalBottomSheet(
+      context: currentContext,
+      isScrollControlled: true,
+      builder: (modalContext) => ChangePasswordModal(
+        baseUrl: baseUrl,
+        username: profileData['username'],
+      ),
+    );
+
+    if (result == true) {
+      if (currentContext.mounted) {
+        ScaffoldMessenger.of(currentContext).showSnackBar(
+          const SnackBar(content: Text('Password berhasil diubah!')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +64,11 @@ class ProfileHeader extends StatelessWidget {
           radius: 50,
           backgroundImage: profileData['profile_photo'] != null
               ? NetworkImage('$baseUrl${profileData['profile_photo']}')
-              : const AssetImage('assets/placeholder.png') as ImageProvider,
+              : null,
+          backgroundColor: Colors.grey[300],
+          child: profileData['profile_photo'] == null
+              ? const Icon(Icons.person, size: 50, color: Colors.white)
+              : null,
         ),
         const SizedBox(height: 16),
         Text(
@@ -39,12 +88,36 @@ class ProfileHeader extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.calendar_today, color: Colors.orange, size: 16),
+            const SizedBox(width: 4),
+            Text(
+              'Bergabung Sejak: ${profileData['date_joined'] ?? 'Tidak diketahui'}',
+              style: const TextStyle(fontSize: 14, color: Colors.black54),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.access_time, color: Colors.orange, size: 16),
+            const SizedBox(width: 4),
+            Text(
+              'Terakhir Login: ${profileData['last_login'] ?? 'Tidak diketahui'}',
+              style: const TextStyle(fontSize: 14, color: Colors.black54),
+            ),
+          ],
+        ),
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () => _openEditProfileModal(context),
               icon: const Icon(Icons.edit, color: Colors.white),
               label: const Text(
                 'Edit Profile',
@@ -66,10 +139,10 @@ class ProfileHeader extends StatelessWidget {
               ),
             ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () => _openChangePasswordModal(context),
               icon: const Icon(Icons.lock, color: Colors.white),
               label: const Text(
-                'Edit Password',
+                'Change Password',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
