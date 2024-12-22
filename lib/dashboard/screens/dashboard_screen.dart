@@ -5,6 +5,7 @@ import 'edit_food_screen.dart';
 import 'add_food_screen.dart';
 import '../models/food_entry.dart'; // Impor model FoodEntry
 import 'dart:math';
+import 'package:yummyogya_mobile/screens/menu.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String username;
@@ -227,6 +228,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Food Dashboard"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back), // Ikon Back
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyHomePage(username: widget.username),
+              ),
+            ); // Navigasi kembali ke MyHomePage
+          },
+          tooltip: 'Back',
+        ),
         actions: [
           DropdownButton<String>(
             value: _sortBy,
