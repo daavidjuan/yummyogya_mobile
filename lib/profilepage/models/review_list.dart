@@ -199,24 +199,6 @@ class ReviewList extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              RadioListTile<String>(
-                title: const Text('Tertinggi'),
-                value: 'highest',
-                groupValue: filter,
-                onChanged: (value) {
-                  onFilterChanged(value);
-                  Navigator.pop(context);
-                },
-              ),
-              RadioListTile<String>(
-                title: const Text('Terendah'),
-                value: 'lowest',
-                groupValue: filter,
-                onChanged: (value) {
-                  onFilterChanged(value);
-                  Navigator.pop(context);
-                },
-              ),
             ],
           ),
         );
