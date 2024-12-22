@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:yummyogya_mobile/screens/menu.dart';
 import 'package:yummyogya_mobile/screens/search.dart';
 import '../models/wishlist_product.dart';
 import 'dart:convert';
@@ -185,7 +186,22 @@ class _WishlistScreenState extends State<WishlistScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Wishlist'),
+        backgroundColor: Colors.orange,
+        title: const Text(
+          'Wishlist',
+          style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyHomePage(username: widget.username),
+              ),
+            ); // Navigasi kembali ke MyHomePage
+          },
+        ),
       ),
       body: wishlistItems.isEmpty
           ? const Center(
@@ -197,13 +213,17 @@ class _WishlistScreenState extends State<WishlistScreen> {
                 final item = wishlistItems[index];
                 return Card(
                   margin: const EdgeInsets.all(8.0),
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: Colors.orange, width: 1.5), // Outline oranye
+                    borderRadius: BorderRadius.circular(10), // Radius melengkung
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
                         // Food Image
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(10.0),
                           child: Image.network(
                             item.gambar,
                             width: 100,
@@ -227,12 +247,19 @@ class _WishlistScreenState extends State<WishlistScreen> {
                             children: [
                               Text(
                                 item.nama,
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87, // Font kekinian
+                                ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 'Rp ${item.harga}',
-                                style: Theme.of(context).textTheme.bodyLarge,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.green, // Warna teks harga
+                                ),
                               ),
                               const SizedBox(height: 4),
                               Row(
@@ -246,7 +273,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                 const SizedBox(height: 4),
                                 Text(
                                   'Notes: ${item.notes}',
-                                  style: Theme.of(context).textTheme.bodySmall,
+                                  style: TextStyle(fontSize: 14, color: Colors.grey),
                                 ),
                               ],
                             ],
@@ -262,7 +289,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                               },
                             ),
                             IconButton(
-                              icon: const Icon(Icons.delete),
+                              icon: const Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
                                 removeFromWishlist(item.id);
                               },
@@ -276,18 +303,20 @@ class _WishlistScreenState extends State<WishlistScreen> {
               },
             ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.orange,
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => SearchPage(
                 username: widget.username,
-                addToWishlist: addToWishlist, // Oper callback
+                addToWishlist: addToWishlist,
               ),
             ),
           );
         },
-        label: const Text('Cari Makanan'),
+        label: const Text('Cari Makanan', style: TextStyle(color: Colors.white)),
+        icon: const Icon(Icons.search, color: Colors.white),
       ),
     );
   }
