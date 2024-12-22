@@ -144,19 +144,6 @@ class LeftDrawerState extends State<LeftDrawer> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Kembali ke Homepage'),
-            onTap: () {
-              if (context.mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/menu',
-                  (route) => false,
-                );
-              }
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async {
