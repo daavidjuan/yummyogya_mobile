@@ -18,7 +18,7 @@ class DetailPage extends StatefulWidget {
 }
 
 class DetailPageState extends State<DetailPage> {
-  final String baseUrl = 'http://192.168.1.10:8000';
+  final String baseUrl = 'http://127.0.0.1:8000';
   Map<String, dynamic> foodData = {};
   List<dynamic> reviews = [];
   int selectedRating = 0;
